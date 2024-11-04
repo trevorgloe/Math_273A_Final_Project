@@ -14,27 +14,16 @@ import matplotlib.cm as cm
 
 
 device = ("cuda" if torch.cuda.is_available() else "cpu")
-
-x1 = np.random.randn(2000)*0.5+3
-x2 = np.random.randn(2000)*0.5+2
-
-x3 = np.random.randn(2000) *0.5 + 4
-x4 = np.random.randn(2000) *0.5 + 5
      
 
-# # Creating a Matrix
-# X_1 = np.vstack([x1, x2])
-# X_2 = np.vstack([x3, x4])
-# X = np.hstack([X_1, X_2]).T
+# # Creating an input vector
 X = np.array([np.linspace(0,6,300)]).T
      
-# Creating a Vector that contains classes (0, 1)
-# y = np.hstack([np.zeros(2000), np.ones(2000)])
+# Creating a Vector that contains sin(x)
 y = np.sin(X)
 
 print(X.shape)
 print(y.shape)
-
 
 # plt.scatter(X[:,0], X[:,1], c=y, cmap=cm.coolwarm, edgecolors='w');
 plt.scatter(X, y)
@@ -61,32 +50,34 @@ print(X_train.shape)
 print(X_test.shape)
 print(y_train.shape)
 print(y_test.shape)
-     
+
+# define quadratic activation function
+class polynomial(nn.Module):
+    def __init__(self):
+        super(polynomial, self).__init__()
+
+    def forward(self, x):
+        return x**2
+    
+
+# define Neural network
 class ShallowNeuralNetwork(nn.Module):
     def __init__(self, input_num, hidden_num, output_num):
         super(ShallowNeuralNetwork, self).__init__()
         self.hidden = nn.Linear(input_num, hidden_num) # hidden layer
         self.output = nn.Linear(hidden_num, output_num) # output layer
         self.sigmoid = nn.Sigmoid() # sigmoid activation function
-        self.relu = nn.ReLU() # relu activation function
+        # self.relu = nn.ReLU() # relu activation function
+        # self.quad = polynomial() # polynomial activation function
+        # self.
     
     def forward(self, x):
-        x = self.relu(self.hidden(x)) 
+        # x = self.quad(self.hidden(x))
+        # x = torch.pow(self.hidden(x),2) 
+        x = self.hidden(x)
         out = self.output(x)
         return out
-    
-    def predict(self, x):
-        # # apply softmax to output 
-        # predictions = self.sigmoid(self.forward(x))
-        # result = []
-        # # pick the class with the maximum weight
-        # for current_value in predictions:
-        #     if current_value[0] > current_value[1]:
-        #         result.append(0)
-        #     else:
-        #         result.append(1)
-        result = self.sigmoid(self.forward(x))
-        return result
+
 
 input_num = 1
 hidden_num = 80
@@ -112,11 +103,12 @@ if torch.cuda.is_available():
 
 num_epochs = 50000 # num of epochs
 # print(X_train.shape)
-# print(model(X_train))
+print(model(X_train))
 
 for epoch in range(num_epochs):
     # forward propagation
     y_pred = model(X_train)
+    print(y_pred)
     loss = criterion(y_pred, y_train)
     
     # back propagation
