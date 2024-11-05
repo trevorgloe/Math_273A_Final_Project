@@ -10,7 +10,7 @@ class QuadraticActivation(nn.Module):
         super(QuadraticActivation, self).__init__()
 
     def forward(self, x):
-        return x**2  # Standard quadratic function
+        return x**4  # Standard quadratic function
 
 # Define the neural network model
 class QuadNN(nn.Module):
@@ -40,10 +40,10 @@ y_train = torch.tensor(y, dtype=torch.float32)
 # Initialize the model, loss function, and optimizer
 model = QuadNN()
 criterion = nn.MSELoss()  # Mean Squared Error loss for regression
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.000001)
 
 # Training loop
-num_epochs = 10000
+num_epochs = 50000
 for epoch in range(num_epochs):
     model.train()
 
