@@ -6,5 +6,5 @@ This repo will store all the files and research materials related to the final p
 - Khang Nguyen
 - Ayush Agrawal
 
-## Notes Doc
-https://docs.google.com/document/d/1B1UenoXBtD76fIeK8qYUfvjtKjINc8SiTxkXMdapCvs/edit?usp=sharing
+## Zotero Group
+https://www.zotero.org/groups/5745372/math273a_final_proj_loe
