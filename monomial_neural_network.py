@@ -44,8 +44,8 @@ class MonomialNeuralNetwork(nn.Module):
                 torch.Tensor: Output tensor after passing through the network.
     """
     def __init__(
-            self, input_size: int, output_size: int, 
-            layers: list = [50, 50], power: int = 2
+            self, input_size: int = 5, output_size: int = 1, 
+            hidden_layers: list = [50, 50], power: int = 2, weights: list = None
         ):
         """
         Initializes the MonomialNeuralNetwork.
@@ -57,14 +57,26 @@ class MonomialNeuralNetwork(nn.Module):
             power (int, optional): The power to which the monomial activation function raises its input. Defaults to 2.
         """
         super().__init__()
-        layer_list = []
+        weights_exist = weights is not None # check if weights are provided
+        layer_list = [] # list of layers in the network
         dim_in = input_size
-        for dim_out in layers:
-            layer_list.append(nn.Linear(dim_in, dim_out))
-            layer_list.append(Monomial(power))
+        
+        for index, dim_out in enumerate(hidden_layers):
+            linear_layer = nn.Linear(dim_in, dim_out) # create a linear layer
+            if weights_exist: # if weights are provided, set the weights of the layer
+                with torch.no_grad():
+                    linear_layer.weight.copy_(weights[index])
+            layer_list.append(linear_layer) # add the linear layer to the list        
+            layer_list.append(Monomial(power)) # add the monomial activation function
             dim_in = dim_out
-        layer_list.append(nn.Linear(dim_in, output_size))
-        self.layers = nn.Sequential(*layer_list)
+
+        output_layer = nn.Linear(dim_in, output_size) # create the output layer
+        if weights_exist: # if weights are provided, set the weights of the output layer
+            with torch.no_grad():
+                output_layer.weight.copy_(weights[-1])
+        layer_list.append(output_layer) # add the output layer
+
+        self.layers = nn.Sequential(*layer_list) # create a sequential container of the layers
     
     def forward(self, x):
         """
@@ -93,53 +105,27 @@ def train(model, x_train, y_train, num_epochs, lr):
     Returns:
         nn.Module: The trained model.
     """
+    # mean-squared error loss 
     criterion = torch.nn.MSELoss()
+    
+    # Adam/SGD optimizer
+    # Note: vanilla gradient descent = stochastic gradient descent with batch size = 1
     # optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr)
     
     print("starting training")
+    losses = []
     for epoch in range(num_epochs):
-        optimizer.zero_grad()
-        output = model(x_train)
-        loss = F.mse_loss(output, y_train)
-        loss.backward()
-        optimizer.step()
+        # forward propagation
+        y_pred = model(x_train) # evaluate the current model on the data
+        loss = criterion(y_pred, y_train) # compute the loss
+        losses.append(loss.item())
+        # back propagation
+        optimizer.zero_grad() # zero out the gradient to add the new one
+        loss.backward() # compute the new gradient
+        # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) # clip the gradient norm
+        optimizer.step() # do a SGD step
         if epoch % 100 == 0:
             print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch, num_epochs, loss.item()))
     print('\nTraining Complete')
-    return model
-# def train(model, x_train, y_train, num_epochs, lr):
-#     # train the model using SGD in pytorch
-#     # inputs:
-#     #   model - pytroch nn.Module inheriting class for the nn model
-#     #   x_train - pytorch tensor of training data
-#     #   y_train - pytorch tensor of training outputs for the nn to match
-#     #   num_epochs - number of epochs used to train
-
-#     # uses the mean-squared error loss 
-    
-#     # uses an SGD optimizer for training
-#     # optimizer = torch.optim.Adam(model.parameters(), lr = 0.01)
-
-
-    
-#     for epoch in range(num_epochs):
-#         # forward propagation
-#         y_pred = model(x_train) # evaluate the current model on the data
-#         # print(y_pred)
-#         loss = criterion(y_pred, y_train) # compute the loss
-#         # print("loss = ")
-#         # print(loss)
-        
-#         # back propagation
-#         optimizer.zero_grad() # zero out the gradient to add the new one
-#         loss.backward() # compute the new gradient
-#         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) # impliment a clip on the gradient size. this is somewhat of a heuristic, so it might not be the best way to do this
-#         optimizer.step() # do a SGD step
-        
-#         if epoch % 200 == 0:
-#             print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch, num_epochs, loss.item()))
-#     print('\nTraining Complete')
-
-#     # return the model, now trained
-#     return model
+    return model, losses
