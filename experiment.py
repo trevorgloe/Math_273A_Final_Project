@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from attrdict import AttrDict
+# from attrdict import AttrDict
 from monomial_neural_network import *
 
 n = 100  # number of data points
@@ -9,8 +9,6 @@ teacher_k = [5, 5]  # number of hidden neurons at each layer of the teacher
 student_k = [5, 5]  # number of hidden neurons at each layer of the student
 
 # create a random teacher model
-
-
 def generate_teacher_model(d: int, k: int, weights=None):
     """
     Generates a teacher model for a neural network with specified input dimension, hidden layers, and weights.
@@ -50,8 +48,6 @@ def generate_teacher_model(d: int, k: int, weights=None):
     return teacher_model
 
 # generate data
-
-
 def generate_data(n: int, d: int, teacher_model):
     """
     Generates synthetic data using a given teacher model.
@@ -72,8 +68,6 @@ def generate_data(n: int, d: int, teacher_model):
     return x, y
 
 # create a student model
-
-
 def generate_student_model(d, k, weights=None):
     """
     Generates a student model for a neural network with specified input dimension, hidden layers, and weights.
