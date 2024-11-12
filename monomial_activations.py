@@ -72,7 +72,8 @@ def student_teacher_train(teacher_W, teacher_v, dim_x, dim_y, N, num_epochs, lr)
 
     #create training data
     m = teacher_W.shape[0]
-    x_train = 4 * (np.random.rand(N, dim_x)-0.5)
+    # x_train = 4 * (np.random.rand(N, dim_x)-0.5)
+    x_train = np.random.normal(0, 2, (N, dim_x)) # replacing the uniform samples with samples from a centered guassian dist with std=2
     x_train_teach = np.hstack([x_train, np.array([np.ones(N)]).T]).T # add an extra set of 1's so the linear transformation can be affine
     # print(x_train)
     # print(teacher_W)
