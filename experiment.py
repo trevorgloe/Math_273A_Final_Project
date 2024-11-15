@@ -158,3 +158,18 @@ def generate_student_model(d, k, weights=None):
 #             power = 2
 #             )
 #         self.model = self.model.to(self.args.device)
+
+def pop_loss(student, teacher, d, N=1000):
+    # compute the population loss, or at least estimate it by evaluating the function for a bunch of 
+    # new data points
+    # can be viewed as the generalization success of the model
+    # N controls how many new data points are made
+
+    # the new test data
+    test_x = torch.randn(N, d)
+    y_teach = teacher(test_x)
+    y_stud = student(test_x)
+
+    e_torch = torch.norm(y_teach - y_stud)
+    e = e_torch.detach().numpy() / N # normalize by the numpy of points
+    return e
