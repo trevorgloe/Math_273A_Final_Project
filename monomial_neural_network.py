@@ -200,7 +200,7 @@ class MonomialNeuralNetwork_noOutputWeight(nn.Module):
 
 
 
-def train(model, x_train, y_train, num_epochs, lr):
+def train(model, x_train, y_train, num_epochs, lr, print_stuff=True):
     """
     Train the neural network model.
 
@@ -238,7 +238,8 @@ def train(model, x_train, y_train, num_epochs, lr):
             max_norm=1.0)  # clip the gradient norm
         optimizer.step()  # do a SGD step
         if epoch % 100 == 0:
-            print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch,
-                  num_epochs, loss.item()))
+            if print_stuff:
+                print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch,
+                    num_epochs, loss.item()))
     print('\nTraining Complete')
     return model, losses
