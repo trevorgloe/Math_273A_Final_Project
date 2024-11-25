@@ -52,11 +52,11 @@ def test_training(n, d, epochs_reported, k_stud, k_teach, num_epochs,p,lr):
 
 d = 5 # dimension of data
 teach_stud = 0 # whether we will vary the width of the student of teacher model, 0=student, 1=teach
-M = 3 # number of test runs that is averaged over for each value of m
+M = 10 # number of test runs that is averaged over for each value of m
 num_pts = 1000 # number of data points used
 epochs = 20000
-m_min = 1
-m_max = 13
+m_min = 3
+m_max = 6
 m_step = 1
 mvec = np.arange(m_min, m_max, m_step)
 k_fixed = 12 # fixed width for the teacher or student depending on which one we're varying
