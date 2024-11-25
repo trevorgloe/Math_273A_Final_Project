@@ -200,7 +200,7 @@ class MonomialNeuralNetwork_noOutputWeight(nn.Module):
 
 
 
-def train(model, x_train, y_train, num_epochs, lr, print_stuff=True):
+def train(model, x_train, y_train, num_epochs, lr, print_stuff=True, epochs_reported=100):
     """
     Train the neural network model.
 
@@ -229,7 +229,7 @@ def train(model, x_train, y_train, num_epochs, lr, print_stuff=True):
         # forward propagation
         y_pred = model(x_train)  # evaluate the current model on the data
         loss = criterion(y_pred, y_train)  # compute the loss
-        losses.append(loss.item())
+        # losses.append(loss.item())
         # back propagation
         optimizer.zero_grad()  # zero out the gradient to add the new one
         loss.backward()  # compute the new gradient
@@ -237,7 +237,8 @@ def train(model, x_train, y_train, num_epochs, lr, print_stuff=True):
             model.parameters(),
             max_norm=1.0)  # clip the gradient norm
         optimizer.step()  # do a SGD step
-        if epoch % 100 == 0:
+        if epoch % epochs_reported == 0:
+            losses.append(loss.item())
             if print_stuff:
                 print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch,
                     num_epochs, loss.item()))
