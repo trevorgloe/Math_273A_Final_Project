@@ -52,7 +52,7 @@ def test_training(n, d, epochs_reported, k_stud, k_teach, num_epochs,p,lr):
 
 d = 5 # dimension of data
 teach_stud = 0 # whether we will vary the width of the student of teacher model, 0=student, 1=teach
-M = 1 # number of test runs that is averaged over for each value of m
+M = 3 # number of test runs that is averaged over for each value of m
 num_pts = 1000 # number of data points used
 epochs = 20000
 m_min = 1
@@ -70,9 +70,9 @@ if not os.path.exists("m_thresh_data"):
 
 ## create a folder for the current run
 if teach_stud==0:
-    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(n)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"lr="+str(lr)
+    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(n)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"_lr="+str(lr)
 else:
-    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(n)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"lr="+str(lr)
+    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(n)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"_lr="+str(lr)
 
 data_dir = os.path.join("m_thresh_data",folder_name)
 os.mkdir(data_dir)
@@ -87,19 +87,30 @@ all_loss = []
 ## loop over all the m values
 for m in mvec:
     # create name for data
-    file_name = os.path.join(data_dir,"m="+str(m))
-    print(file_name)
-    if teach_stud==0:
-        l, stud_w, teach_w = test_training(n=num_pts, d=d, epochs_reported=epochs_reported, k_stud=m, k_teach=k_fixed,num_epochs=epochs,p=p,lr=lr)
-    else:
-        l, stud_w, teach_w = test_training(n=num_pts, d=d, epochs_reported=epochs_reported, k_teach=m, k_stud=k_fixed,num_epochs=epochs,p=2,lr=lr)
+    this_m_folder_name = os.path.join(data_dir,"m="+str(m))
+    print(this_m_folder_name)
+    os.makedirs(this_m_folder_name)
+    l_tot = np.zeros(int(np.floor(epochs/epochs_reported)))
+    for i in range(M):
+        # iterate over the number of times we want to take the average over
+        print("run = "+str(i))
+        if teach_stud==0:
+            curr_l, stud_w, teach_w = test_training(n=num_pts, d=d, epochs_reported=epochs_reported, k_stud=m, k_teach=k_fixed,num_epochs=epochs,p=p,lr=lr)
+        else:
+            curr_l, stud_w, teach_w = test_training(n=num_pts, d=d, epochs_reported=epochs_reported, k_teach=m, k_stud=k_fixed,num_epochs=epochs,p=2,lr=lr)
+        
+        l_tot = l_tot + curr_l
+        # save the data
+        file_name = os.path.join(this_m_folder_name, "run="+str(i))
+        np.save(file_name,curr_l)
 
-    all_loss.append(l)
+    avg_l = l_tot / M # take the average
+
+    all_loss.append(avg_l)
     all_student_w.append(stud_w)
     all_teacher_w.append(teach_w)
 
-    # save the data
-    np.save(file_name,l)
+    
 
 
 # print out the data to make sure the runs were reasonable
