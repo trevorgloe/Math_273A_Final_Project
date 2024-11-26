@@ -9,7 +9,7 @@ teacher_k = [5, 5]  # number of hidden neurons at each layer of the teacher
 student_k = [5, 5]  # number of hidden neurons at each layer of the student
 
 # create a random teacher model
-def generate_teacher_model(d: int, k: int, weights=None):
+def generate_teacher_model(d: int, k: int, weights=None, power=2):
     """
     Generates a teacher model for a neural network with specified input dimension, hidden layers, and weights.
     Args:
@@ -42,7 +42,7 @@ def generate_teacher_model(d: int, k: int, weights=None):
         input_size=d,
         output_size=1,
         hidden_layers=k,
-        power=2,
+        power=power,
         weights=weights
     )
     return teacher_model
@@ -107,7 +107,7 @@ def generate_data(n: int, d: int, teacher_model):
     return x, y
 
 # create a student model
-def generate_student_model(d, k, weights=None):
+def generate_student_model(d, k, weights=None, power=2):
     """
     Generates a student model for a neural network with specified input dimension, hidden layers, and weights.
 
@@ -144,7 +144,7 @@ def generate_student_model(d, k, weights=None):
         input_size=d,
         output_size=1,
         hidden_layers=k,
-        power=2,
+        power=power,
         weights=weights
     )
     return student_model
