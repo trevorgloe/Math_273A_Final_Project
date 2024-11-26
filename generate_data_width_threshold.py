@@ -52,17 +52,17 @@ def test_training(n, d, epochs_reported, k_stud, k_teach, num_epochs,p,lr):
 
 d = 5 # dimension of data
 teach_stud = 0 # whether we will vary the width of the student of teacher model, 0=student, 1=teach
-M = 10 # number of test runs that is averaged over for each value of m
+M = 40 # number of test runs that is averaged over for each value of m
 num_pts = 1000 # number of data points used
-epochs = 20000
-m_min = 3
-m_max = 6
-m_step = 1
+epochs = 150000
+m_min = 4
+m_max = 22
+m_step = 2
 mvec = np.arange(m_min, m_max, m_step)
-k_fixed = 12 # fixed width for the teacher or student depending on which one we're varying
-epochs_reported = 100 # how often is the data actually recorded 
-p=2 # monomial power
-lr = 1e-3 # learning rate
+k_fixed = 20 # fixed width for the teacher or student depending on which one we're varying
+epochs_reported = 500 # how often is the data actually recorded 
+p=3 # monomial power
+lr = 1e-4 # learning rate
 
 ## create folder for saving data if it doesnt exist
 if not os.path.exists("m_thresh_data"):
@@ -70,9 +70,9 @@ if not os.path.exists("m_thresh_data"):
 
 ## create a folder for the current run
 if teach_stud==0:
-    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(n)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"_lr="+str(lr)
+    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(num_pts)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"_lr="+str(lr)
 else:
-    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_stud_M="+str(M)+"n="+str(n)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"_lr="+str(lr)
+    folder_name = "loss_values_p="+str(p)+"_d="+str(d)+"_var_teach_M="+str(M)+"n="+str(num_pts)+"epochs="+str(epochs)+"_fixed_k="+str(k_fixed)+"epochs_reported="+str(epochs_reported)+"_lr="+str(lr)
 
 data_dir = os.path.join("m_thresh_data",folder_name)
 os.mkdir(data_dir)

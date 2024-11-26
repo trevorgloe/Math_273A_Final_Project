@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 # define monomial activation function
 
@@ -214,6 +215,16 @@ def train(model, x_train, y_train, num_epochs, lr, print_stuff=True, epochs_repo
     Returns:
         nn.Module: The trained model.
     """
+
+    if torch.cuda.is_available():
+        print("GPU is available!")
+    else:
+        print("GPU is not available.")
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    x_train = Variable(x_train).cuda()
+    y_train = Variable(y_train).cuda()
     # mean-squared error loss
     criterion = torch.nn.MSELoss()
 
@@ -243,4 +254,5 @@ def train(model, x_train, y_train, num_epochs, lr, print_stuff=True, epochs_repo
                 print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch,
                     num_epochs, loss.item()))
     print('\nTraining Complete')
+    model = model.to("cpu")
     return model, losses

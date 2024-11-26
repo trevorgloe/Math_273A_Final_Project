@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-run_name = "loss_values_p=2_d=5_var_stud_M=10n=100epochs=20000_fixed_k=12epochs_reported=100_lr=0.001"
+run_name = "loss_values_p=2_d=5_var_stud_M=3n=100epochs=20000_fixed_k=12epochs_reported=100_lr=0.001"
 folder_name = os.path.join("m_thresh_data",run_name)
 data_run_names = os.listdir(folder_name)
 num_ms = len(data_run_names)
