@@ -223,8 +223,10 @@ def train(model, x_train, y_train, num_epochs, lr, print_stuff=True, epochs_repo
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    x_train = Variable(x_train).cuda()
-    y_train = Variable(y_train).cuda()
+    if torch.cuda.is_available():
+        x_train = Variable(x_train).cuda()
+        y_train = Variable(y_train).cuda()
+        
     # mean-squared error loss
     criterion = torch.nn.MSELoss()
 
