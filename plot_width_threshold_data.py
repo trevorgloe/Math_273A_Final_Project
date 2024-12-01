@@ -3,14 +3,42 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import os
 
-run_name = "loss_values_p=2_d=5_var_stud_M=3n=100epochs=20000_fixed_k=12epochs_reported=100_lr=0.001"
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 15}
+
+matplotlib.rc('font', **font)
+
+def organize_runs(run_list):
+    # oragnize the runs in accending order in m
+    new_list = []
+    m_ints = []
+    for name in run_list:
+        temp = name.split("=")
+        int_numpy = temp[1]
+        temp2 = int_numpy.split(".")
+        just_int = temp2[0]
+        m_ints.append(int(just_int))
+
+    sorted_ms = m_ints.copy()
+    sorted_ms.sort()
+
+    for sorted_int in sorted_ms:
+        new_list.append("m="+str(sorted_int))
+
+    return new_list
+
+run_name = "loss_values_p=2_d=4_var_stud_M=40n=1000epochs=30000_fixed_k=4epochs_reported=100_lr=0.0008"
 folder_name = os.path.join("m_thresh_data",run_name)
 data_run_names = os.listdir(folder_name)
+data_run_names = organize_runs(data_run_names)
+print(data_run_names)
 num_ms = len(data_run_names)
 epochs_reported = 100
-epochs = 20000
+epochs = 30000
 
 avg_losses = []
 for run_name in data_run_names:
@@ -46,4 +74,7 @@ for i in range(num_ms):
 plt.xlabel("Iterations")
 plt.ylabel("Empirical Loss")
 plt.legend()
+plt.grid(True)
+plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+plt.tight_layout()
 plt.show()
