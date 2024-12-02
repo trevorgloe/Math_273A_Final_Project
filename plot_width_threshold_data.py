@@ -31,14 +31,14 @@ def organize_runs(run_list):
 
     return new_list
 
-run_name = "loss_values_p=2_d=4_var_stud_M=40n=1000epochs=30000_fixed_k=4epochs_reported=100_lr=0.0008"
+run_name = "loss_values_p=3_d=4_var_stud_M=30n=1000epochs=100000_fixed_k=16epochs_reported=200_lr=0.0001"
 folder_name = os.path.join("m_thresh_data",run_name)
 data_run_names = os.listdir(folder_name)
 data_run_names = organize_runs(data_run_names)
 print(data_run_names)
 num_ms = len(data_run_names)
-epochs_reported = 100
-epochs = 30000
+epochs_reported = 200
+epochs = 100000
 
 avg_losses = []
 for run_name in data_run_names:

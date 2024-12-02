@@ -52,19 +52,19 @@ def test_training(n, d, epochs_reported, k_stud, k_teach, num_epochs,p,lr):
 
 d = 4 # dimension of data
 teach_stud = 0 # whether we will vary the width of the student of teacher model, 0=student, 1=teach
-M = 40 # number of test runs that is averaged over for each value of m
+M = 30 # number of test runs that is averaged over for each value of m
 num_pts = 1000 # number of data points used
-epochs = 30000
+epochs = 100000
 m_min = 2
 m_max = 4
 m_step = 3
 # mvec = np.arange(m_min, m_max, m_step)
-mvec = [1,2,4,6,10]
+mvec = [4,5,6,7,8,12,16,18]
 # mvec = [2, 6]
-k_fixed = 4 # fixed width for the teacher or student depending on which one we're varying
-epochs_reported = 100 # how often is the data actually recorded 
-p=2 # monomial power
-lr = 8e-4 # learning rate
+k_fixed = 16 # fixed width for the teacher or student depending on which one we're varying
+epochs_reported = 200 # how often is the data actually recorded 
+p=3 # monomial power
+lr = 1e-4 # learning rate
 
 ## create folder for saving data if it doesnt exist
 if not os.path.exists("m_thresh_data"):
